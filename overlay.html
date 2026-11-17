@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Screen Trainer Overlay</title>
+<link rel="stylesheet" href="overlay.css">
+<link rel="stylesheet" href="square.css">
+<link rel="stylesheet" href="pointers.css">
+</head>
+<body>
+<div id="root">
+  <canvas id="ground"></canvas>
+  <div id="stPlaces"></div>
+  <div id="world"></div>
+  <div id="boxField" hidden></div>
+  <canvas id="top"></canvas>
+</div>
+<div id="screen">
+  <div id="toasts"></div>
+  <div id="notice" hidden></div>
+</div>
+<!-- Load order matters: data, then rules, then the game. tools/playtest.js reads this list. -->
+<script src="src/data.js"></script>
+<script src="src/data-extra.js"></script>
+<script src="src/data-breed.js"></script>
+<script src="src/data-forms.js"></script>
+<script src="src/size.js"></script>
+<script src="src/mon.js"></script>
+<script src="src/breed.js"></script>
+<script src="src/sprites.js"></script>
+<script src="src/fx.js"></script>
+<script src="src/machine.js"></script>
+<script src="src/core.js"></script>
+<script src="src/items.js"></script>
+<script src="src/honors.js"></script>
+<script src="src/notify.js"></script>
+<script src="src/sound.js"></script>
+<script src="src/battle.js"></script>
+<script src="src/game.js"></script>
+<script src="src/forms.js"></script>
+<script src="src/rivals.js"></script>
+<script src="src/events.js"></script>
+<script src="src/mewtwo.js"></script>
+<!-- the field window's world (0.7): its ground rules, and Fountain Square in its middle. The same files as on the stage. -->
+<script src="src/field.js"></script>
+<script src="src/fountain.js"></script>
+<script src="src/stations.js"></script>
+<script src="src/square.js"></script>
+<script src="src/boxfield.js"></script>
+<script src="src/showdown.js"></script>
+<script src="src/visitors.js"></script>
+<script src="src/overlay.js"></script>
+</body>
+</html>

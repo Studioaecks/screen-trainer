@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Screen Trainer for Android: a shell around a web view. The game, the options to start with, the pictures and the save
+     that were chosen at export time are added to the package as plain files under assets/ (apkexport.js). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="app.screentrainer" android:versionCode="600" android:versionName="0.6.0">
+  <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
+  <!-- The web view asks Android for this before it will load any page at all. The app itself never uses the
+       network: Host.java answers every request from the files inside the package and refuses everything else. -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <!-- "Train with the screen off": Keep.java shows one notification and keeps the processor awake while the app is open -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <application android:label="Screen Trainer" android:icon="@mipmap/ic_launcher" android:allowBackup="true"
+      android:hardwareAccelerated="true" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+    <!-- keep the system web view from phoning home on this app's behalf -->
+    <meta-data android:name="android.webkit.WebView.MetricsOptOut" android:value="true" />
+    <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing" android:value="false" />
+    <activity android:name="app.screentrainer.MainActivity" android:exported="true" android:launchMode="singleTask"
+        android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|keyboard|density|uiMode|navigation">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <service android:name="app.screentrainer.Keep" android:exported="false" android:foregroundServiceType="mediaPlayback" />
+    <!-- the same field as a screen saver (Settings > Display > Screen saver) -->
+    <service android:name="app.screentrainer.Dream" android:exported="true" android:label="Screen Trainer"
+        android:permission="android.permission.BIND_DREAM_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.dreams.DreamService" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </service>
+  </application>
+</manifest>

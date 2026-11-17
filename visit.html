@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Screen Trainer online</title>
+<link rel="stylesheet" href="pointers.css">
+<link rel="stylesheet" href="visit.css">
+</head>
+<!-- The "online" window (0.8): visiting other Trainers, and who may visit you. online.js in the main process does the
+     deciding and the checking; src/visit.js is this page (the buttons, and the visitor's end of the connection).
+     Nothing can be typed to another player here: the only field takes a friend's code. -->
+<body>
+<header>
+  <span class="lamp" id="lamp"></span>
+  <h1>Screen Trainer <small>online</small></h1>
+  <span class="pill" id="state">offline</span>
+  <span class="grow"></span>
+  <span class="me" id="me"></span>
+</header>
+<main>
+  <section id="view">
+    <div id="screen">
+      <video id="vid" autoplay playsinline muted></video>
+      <div id="idle">
+        <h2 id="idleTitle">Visit another Trainer</h2>
+        <p id="idleText">You see their field and play on it with a pointer of your own: weaken wild Pokémon, throw balls. Whatever is caught while you are there, each of you gets one.</p>
+        <div class="row"><button class="big go" id="goRandom">Visit a random Trainer</button></div>
+        <div class="row"><input id="friend" maxlength="11" spellcheck="false" autocomplete="off" placeholder="ABCDE-FGHJK" aria-label="A friend's code"><button class="big" id="goFriend">Visit a friend</button></div>
+        <p class="note" id="note"></p>
+      </div>
+      <div id="busy" hidden><div class="spin"></div><p id="busyText">Looking for somebody…</p><button id="stop">Stop</button></div>
+    </div>
+    <div id="bar" hidden>
+      <div id="who"></div>
+      <div id="lines"></div>
+      <div class="row end"><button id="home" class="go">Go home</button><button id="block" class="bad">Block this Trainer and go home</button></div>
+      <p class="note">Left click: weaken a wild Pokémon or pet. Right click: throw a ball. The ball on top of the fountain takes you home.</p>
+    </div>
+  </section>
+  <aside>
+    <h3>Who may visit you</h3>
+    <div class="modes" id="modes">
+      <label><input type="radio" name="mode" value="off"><b>Nobody</b><span>offline: nothing is sent or looked for</span></label>
+      <label><input type="radio" name="mode" value="friends"><b>Friends</b><span>only who has your friend code</span></label>
+      <label><input type="radio" name="mode" value="open"><b>Anyone</b><span>random visitors too</span></label>
+    </div>
+    <p class="note warn">A visit is a direct connection between two computers, without a server in between. As in any such game, the Trainers you meet can find out your IP address, and you theirs.</p>
+    <div class="code"><span>Your friend code</span><b id="code">-----·-----</b><button id="copy">Copy</button><button id="newCode" title="The old code stops working at once.">New</button></div>
+    <p class="note" id="hostNote"></p>
+    <button id="openMs" hidden>Open MyStream</button>
+    <div id="guests"></div>
+    <div id="hostLines" hidden></div>
+    <div id="hostChat" hidden><input id="hostText" maxlength="120" spellcheck="true" autocomplete="off" placeholder="Say something to your visitors" aria-label="Say something to your visitors"><button id="hostSend">Say</button><p class="note">Only you can type: your visitors answer with ready-made lines. What you type shows on your stream.</p></div>
+
+    <h3>You</h3>
+    <div class="you"><select id="cls" aria-label="Trainer class"></select><span id="num"></span></div>
+    <p class="note">A name is a class and a number. Visitors talk with ready-made lines; a host can type to the visitors on their own stage, so when you visit, what your host writes is theirs to answer for.</p>
+    <div id="cursors"></div>
+
+    <h3>Blocked <small id="blockedN"></small></h3>
+    <div id="blocked"></div>
+  </aside>
+</main>
+<div id="toast" hidden></div>
+<script src="pointers.js"></script>
+<script src="src/visit.js"></script>
+</body>
+</html>

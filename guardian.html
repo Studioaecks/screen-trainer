@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Screen Trainer Mewtwo</title>
+<link rel="stylesheet" href="guardian.css">
+</head>
+<body>
+<!-- Mewtwo's window: the computer guardian. The page only shows and asks; guardian.js in the main process does the work.
+     Four screens (#watch, #tune, #ask, #log), switched by the buttons in #tabs. Element ids are unique across the page. -->
+<main id="unit">
+  <header id="top">
+    <div class="pod"><img id="face" alt="" draggable="false"></div>
+    <div class="who">
+      <h1>Mewtwo <span class="rank">XXL Super Alpha</span></h1>
+      <div class="sub" id="host">guardian of this computer</div>
+    </div>
+    <button class="wkey" id="winMin" aria-label="Minimize" title="Minimize">–</button>
+    <button class="wkey" id="winClose" aria-label="Close this window" title="Close this window (Mewtwo keeps watch)">×</button>
+  </header>
+
+  <div class="speech" id="speech" aria-live="polite">Let me look this machine over.</div>
+
+  <nav id="tabs" aria-label="Screens">
+    <button class="tab on" data-tab="watch">watch</button>
+    <button class="tab" data-tab="tune">tune</button>
+    <button class="tab" data-tab="guard" title="AI programs on this computer">guard</button>
+    <button class="tab" data-tab="backup" title="Copies on a USB stick or external drive">backup</button>
+    <button class="tab" data-tab="ask">ask</button>
+    <button class="tab" data-tab="log">log</button>
+    <button class="tab mini" id="refresh" title="Look again now">look again</button>
+  </nav>
+
+  <div class="frame" id="frame">
+    <section id="watch" class="screen on">
+      <div class="scroll" id="watchBody"><p class="quiet">Looking…</p></div>
+    </section>
+    <!-- 0.9.9 (src/guardian-more.js): the AI watch and the backups -->
+    <section id="guard" class="screen">
+      <div class="scroll" id="guardBody"></div>
+    </section>
+    <section id="backup" class="screen">
+      <div class="scroll" id="backupBody"></div>
+    </section>
+
+    <section id="tune" class="screen">
+      <div class="scroll" id="tuneBody"></div>
+    </section>
+
+    <section id="ask" class="screen">
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="chips" id="quick"></div>
+      <form class="askbar" id="askForm">
+        <input type="text" id="question" maxlength="1000" placeholder="Ask Mewtwo about this computer" autocomplete="off" aria-label="Your question">
+        <button class="btn go" id="send">Ask</button>
+      </form>
+      <details class="ai" id="aiBox">
+        <summary>Who answers: <b id="aiNow">Mewtwo, from its own checks</b></summary>
+        <div class="aigrid">
+          <label for="aiProvider">Answered by</label><select id="aiProvider"></select>
+          <label for="aiUrl" class="needs-url">Address</label><div class="row needs-url"><input type="text" id="aiUrl" spellcheck="false" placeholder="http://127.0.0.1:1234/v1"><button class="btn" id="aiDetect" type="button" title="Look for a model server running on this computer">Find</button></div>
+          <label for="aiModel" class="needs-ai">Model</label><div class="row needs-ai"><input type="text" id="aiModel" spellcheck="false" list="aiModels"><datalist id="aiModels"></datalist><button class="btn" id="aiList" type="button" title="Ask the service which models it has">List</button></div>
+          <label for="aiKey" class="needs-key">API key</label><div class="row needs-key"><input type="password" id="aiKey" spellcheck="false" autocomplete="off" placeholder=""><button class="btn" id="aiForget" type="button">Forget</button></div>
+          <span class="needs-ai"></span><label class="tick needs-ai"><input type="checkbox" id="aiShare"> Tell the AI about this computer <small>(processor, memory, drives, protection and update status, and the names of the programs using the most memory)</small></label>
+        </div>
+        <p class="quiet" id="aiNote"></p>
+      </details>
+    </section>
+
+    <section id="log" class="screen">
+      <div class="scroll" id="logBody"></div>
+    </section>
+  </div>
+</main>
+<script src="src/sprites.js"></script>
+<script src="src/guardian-ui.js"></script>
+<script src="src/guardian-more.js"></script>
+</body>
+</html>

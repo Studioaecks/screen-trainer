@@ -1,0 +1,52 @@
+/* Screen Trainer — Fountain Square: the fountain, the places round it (Poké Center, pipe, Day Care, trade pads) and
+   the button on the fountain's top. Shared by the MyStream stage (stage.html) and, since 0.7, the field window's
+   overlay (overlay.html). Until 0.7 these rules were part of stage.css. */
+@font-face { font-family: 'DotGothic16'; src: url('fonts/DotGothic16-Latin.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Jersey 20'; src: url('fonts/Jersey20.ttf') format('truetype'); font-display: block; }
+
+/* the fountain stands in the game's world, so Pokémon walk in front of it and behind it */
+.fountain { position: absolute; left: 0; top: 0; pointer-events: none; image-rendering: pixelated; }
+.fountain canvas { position: static; display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+body.stage.nofountain .fountain { display: none; }
+
+/* the places round the fountain (src/stations.js): buildings stand in the game's world like the fountain does */
+.station { position: absolute; left: 0; top: 0; pointer-events: none; image-rendering: pixelated; }
+.station canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.station[hidden], .stSign[hidden] { display: none; }
+img.station.guest { width: auto; }
+.stSign { position: absolute; transform: translateX(-50%); z-index: 100000; padding: 1px 9px 2px; border-radius: 99px; background: rgba(16, 19, 27, .62); color: #f3f6ff; font: 17px/1.15 'Jersey 20', 'DotGothic16', sans-serif; letter-spacing: .02em; white-space: nowrap; pointer-events: none; }
+.stSign.ask { white-space: normal; width: 300px; text-align: center; border-radius: 12px; padding: 7px 12px 8px; background: rgba(40, 24, 70, .92); border: 2px solid #ffd24a; font-size: 19px; }
+body.stage.notrainer .stSign, body.stage.notrainer .station { visibility: visible; }
+/* a trade: the field goes dark, one silhouette leaves, another arrives and takes on its colours */
+#stTrade { position: fixed; inset: 0; z-index: 2002; background: rgba(6, 8, 18, 0); pointer-events: none; }
+#stTrade[hidden] { display: none; }
+#stTrade img { position: absolute; left: 50%; top: 50%; height: 190px; margin: -110px 0 0; transform: translateX(-50%); image-rendering: pixelated; opacity: 0; filter: brightness(0) invert(1); }
+#stTrade p { position: absolute; left: 0; right: 0; top: 68%; margin: 0; text-align: center; color: #fff; font: 34px 'Jersey 20', 'DotGothic16', sans-serif; text-shadow: 0 2px 0 #000; opacity: 0; }
+#stTrade.go { animation: stDark 5.2s linear both; }
+#stTrade.go p { animation: stLine 5.2s linear both; }
+#stTrade.go .out { animation: stOut 2.3s ease-in both; }
+#stTrade.go .in { animation: stIn 2.9s ease-out 2.3s both; }
+@keyframes stDark { 0% { background: rgba(6, 8, 18, 0); } 12%, 88% { background: rgba(6, 8, 18, .93); } 100% { background: rgba(6, 8, 18, 0); } }
+@keyframes stLine { 0%, 8% { opacity: 0; } 14%, 86% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes stOut { 0% { opacity: 0; transform: translate(-50%, 0); } 25% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -330px) scale(.5); } }
+@keyframes stIn { 0% { opacity: 0; transform: translate(-50%, -330px) scale(.5); filter: brightness(0) invert(1); } 45% { opacity: 1; transform: translate(-50%, 0); filter: brightness(0) invert(1); } 62% { filter: brightness(3); } 75%, 90% { opacity: 1; filter: none; transform: translate(-50%, 0); } 100% { opacity: 0; filter: none; transform: translate(-50%, 0); } }
+
+/* what the Day Care says about its two guests, and an egg that is about to hatch */
+.stSign.say { font-size: 15px; background: rgba(16, 19, 27, .5); }
+.station.eggs.stir { animation: eggStir .5s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes eggStir { 0%, 100% { rotate: 0deg; } 25% { rotate: -9deg; } 75% { rotate: 9deg; } }
+
+/* ---- in the field window (overlay.html): the square's layer lies in the world, under the Pokémon, and moves with the camera */
+#root > #stPlaces { position: absolute; left: 0; top: 0; width: 0; height: 0; overflow: visible; pointer-events: none; z-index: 0; }
+#root:not(.field) > #stPlaces { display: none; }
+.fountain[hidden], .sqTop[hidden] { display: none; }
+/* a trade darkens the field, not the whole screen */
+#root > #stTrade { position: absolute; z-index: 3; }
+
+/* ---- the button on top of the fountain (src/square.js): the ball there opens online visiting, and brings a visitor home */
+.sqTop { position: absolute; left: 0; top: 0; border-radius: 50%; pointer-events: none; z-index: 100001; box-shadow: 0 0 0 2px rgba(255, 255, 255, .0); animation: sqPulse 2.6s ease-in-out infinite; }
+.sqTop.hot { box-shadow: 0 0 0 2px #ffffff, 0 0 12px 4px rgba(255, 246, 168, .85); animation: none; }
+.sqTop.press { animation: sqPress .25s ease-out; }
+.stSign.sqTip { z-index: 100002; background: rgba(40, 24, 70, .92); border: 2px solid #ffd24a; }
+@keyframes sqPulse { 0%, 100% { box-shadow: 0 0 0 1px rgba(255, 246, 168, .25); } 50% { box-shadow: 0 0 0 3px rgba(255, 246, 168, .7), 0 0 10px 2px rgba(255, 246, 168, .45); } }
+@keyframes sqPress { 0% { transform-origin: 50% 50%; scale: .8; } 100% { scale: 1; } }

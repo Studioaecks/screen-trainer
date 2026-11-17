@@ -1,0 +1,89 @@
+/* Screen Trainer — how the game is drawn: the overlay page (overlay.html) and the Android page (android.html) share
+   this file. Sprites are separate elements inside #world; effects, name tags and weather are two canvases. */
+/* forced-color-adjust: a Windows contrast theme must not strip the notification cards of their backgrounds (see panel.css) */
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; user-select: none; -webkit-user-select: none; forced-color-adjust: none; }
+/* #root is the world: the whole screen, or the inside of the field window while that is open (src/overlay.js sets its
+   place and size). It cuts sprites off at its edge, so wild Pokémon come in from behind the field's border; .open lifts
+   that while the team is being brought into a newly created field. #screen is always the whole screen. */
+#root { position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; }
+#root.open { overflow: visible; }
+#screen { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+canvas { position: absolute; left: 0; top: 0; pointer-events: none; }
+#ground { z-index: 0; }
+#world { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+#top { z-index: 2; }
+.actor { position: absolute; left: 0; top: 0; will-change: transform; pointer-events: none; transform-origin: 50% 100%; }
+.spr { display: block; image-rendering: pixelated; pointer-events: none; }
+.ball, .drop { position: absolute; left: 0; top: 0; image-rendering: pixelated; pointer-events: none; will-change: transform; }
+.ball.plain { border-radius: 50%; background: #f4f4f4; border: 2px solid #20242c; box-sizing: border-box; }
+.drop { filter: drop-shadow(0 0 3px rgba(255, 246, 168, .9)); }
+.drop.plain { border-radius: 30%; background: #ffe14d; border: 2px solid #20242c; box-sizing: border-box; }
+#notice { position: absolute; left: 50%; bottom: 12%; transform: translateX(-50%); z-index: 100001; padding: 10px 16px; border-radius: 10px;
+  background: rgba(16, 19, 27, .88); color: #eef2ff; font: 600 13px "Segoe UI", system-ui, sans-serif; border: 1px solid rgba(255, 255, 255, .16); }
+/* Mewtwo, the computer guardian (src/mewtwo.js): floats on the spot, glows, speaks in a card.
+   The glow is a drop-shadow, so it follows the sprite's own outline whatever the picture's margins are. */
+.guard { position: absolute; left: 0; top: 0; pointer-events: none; will-change: transform; }
+.guard .gspr { position: relative; animation: gfloat 4.2s ease-in-out infinite, gglow 3.1s ease-in-out infinite; }
+.guard.flip .gspr { transform: scaleX(-1); animation-name: gfloatflip, gglow; }
+.guard.held .gspr { animation-play-state: paused; }
+.guard.speaking .gspr, .guard.over .gspr { animation-duration: 4.2s, 1.2s; }
+@keyframes gfloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes gfloatflip { 0%, 100% { transform: scaleX(-1) translateY(0); } 50% { transform: scaleX(-1) translateY(-7px); } }
+@keyframes gglow { 0%, 100% { filter: drop-shadow(0 0 5px rgba(196, 128, 255, .55)) drop-shadow(0 0 14px rgba(170, 90, 255, .3)); } 50% { filter: drop-shadow(0 0 8px rgba(255, 110, 170, .7)) drop-shadow(0 0 22px rgba(255, 96, 150, .38)); } }
+.gtag { position: absolute; left: 50%; top: -22px; transform: translateX(-50%); white-space: nowrap; padding: 2px 9px; border-radius: 99px; opacity: 0; transition: opacity .15s;
+  background: rgba(16, 19, 27, .88); color: #e7d4ff; font: 600 11px "Segoe UI", system-ui, sans-serif; border: 1px solid rgba(214, 184, 255, .5); }
+.guard.over .gtag { opacity: 1; }
+.gsay { position: absolute; left: 50%; bottom: 100%; margin-bottom: 26px; transform: translateX(-50%); width: max-content; max-width: 280px; padding: 9px 13px; border-radius: 12px;
+  border-left: 4px solid #c9a0ff; background: linear-gradient(180deg, rgba(27, 32, 44, .96), rgba(15, 18, 26, .96)); box-shadow: 0 8px 24px rgba(0, 0, 0, .38);
+  color: #eef2ff; font: 13px/1.4 "Segoe UI", system-ui, sans-serif; }
+.gsay[hidden] { display: none; }
+/* 0.9.5: off on a long task, a dive into the bottom right corner; and back from there (src/mewtwo.js away / back).
+   0.9.6: upright, as it stands (the owner found the headfirst turn goofy). */
+.guard.diving { transition: transform .85s cubic-bezier(.55, 0, .95, .45); }
+.guard.diving .gspr { animation: none; }
+.guard.diving.flip .gspr { transform: scaleX(-1); }
+.guard.returning { transition: transform 1s cubic-bezier(.15, .6, .35, 1); }
+.guard.returning .gspr { animation: none; }
+.guard.returning.flip .gspr { transform: scaleX(-1); }
+@media (prefers-reduced-motion: reduce) { .guard .gspr { animation: none; filter: drop-shadow(0 0 6px rgba(196, 128, 255, .6)); } }
+/* notification cards (src/notify.js) */
+#toasts { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; width: min(92vw, 560px); }
+.toast { display: flex; align-items: center; gap: 12px; min-width: 250px; max-width: 100%; box-sizing: border-box; padding: 9px 16px 9px 12px; border-radius: 12px; border-left: 4px solid #c9d4ea;
+  background: linear-gradient(180deg, rgba(27, 32, 44, .95), rgba(15, 18, 26, .95)); box-shadow: 0 8px 24px rgba(0, 0, 0, .38), inset 0 0 0 1px rgba(255, 255, 255, .09);
+  color: #eef2ff; font: 13px/1.35 "Segoe UI", system-ui, sans-serif; transition: opacity .28s ease, transform .28s cubic-bezier(.2, 1.4, .4, 1); }
+.toast.in { opacity: 0; transform: translateY(-14px) scale(.96); }
+.toast.out { opacity: 0; transform: translateY(-8px); transition: opacity .3s ease, transform .3s ease; }
+.ticon { width: 44px; height: 44px; flex: none; object-fit: contain; image-rendering: pixelated; }
+.ticon.smooth { image-rendering: auto; }
+.ttitle { font-weight: 700; font-size: 13.5px; letter-spacing: .01em; }
+.ttext { color: #a9b6cc; font-size: 12px; margin-top: 1px; }
+.tcount { margin-left: 8px; padding: 0 7px; border-radius: 99px; background: rgba(255, 255, 255, .14); font-size: 11px; font-weight: 700; }
+
+/* a Dynamaxed team member (src/forms.js): the red glow of the games */
+.actor.dmax .spr { filter: drop-shadow(0 0 5px #ff3b6b) drop-shadow(0 0 14px rgba(255, 59, 107, .6)); }
+
+/* another Trainer's pointer (src/rivals.js): an arrow of its own, its name under it, what it says over it */
+.rival { position: absolute; left: 0; top: 0; width: 28px; height: 36px; pointer-events: none; will-change: transform; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45)); z-index: 4; }
+.rival svg { display: block; }
+.rival .who { position: absolute; left: 24px; top: 26px; padding: 1px 7px 2px; border-radius: 99px; background: rgba(12, 14, 20, .82); color: #fff; font: 600 11px "Segoe UI", system-ui, sans-serif; white-space: nowrap; }
+.rival.gym .who { background: rgba(120, 84, 10, .92); color: #fff3c4; }
+.rival .say { position: absolute; left: 14px; bottom: 44px; transform: translateX(-30%); width: max-content; max-width: 250px; padding: 6px 10px 7px; border-radius: 10px; background: rgba(250, 250, 255, .96); color: #171a26; font: 600 12px/1.3 "Segoe UI", system-ui, sans-serif; box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+.rival .say[hidden] { display: none; }
+
+/* the badge button that calls a Gym Leader back (src/rivals.js): on the screen's left edge while a badge is still to be won from a leader who came by */
+.gymBtn { position: absolute; left: 0; top: 0; width: 48px; height: 48px; pointer-events: none; will-change: transform; z-index: 4; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .5)); }
+.gymBtn .pic { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; background: rgba(12, 14, 20, .78); border: 2px solid rgba(255, 225, 77, .9); color: #ffe36a; font: 700 15px "Segoe UI", system-ui, sans-serif; animation: gymPulse 2.4s ease-in-out infinite; }
+.gymBtn .pic img { width: 34px; height: 34px; object-fit: contain; }
+.gymBtn .tip { position: absolute; left: 56px; top: 12px; padding: 3px 9px 4px; border-radius: 99px; background: rgba(120, 84, 10, .94); color: #fff3c4; font: 600 12px "Segoe UI", system-ui, sans-serif; white-space: nowrap; opacity: 0; transition: opacity .12s; }
+.gymBtn.hot .tip { opacity: 1; }
+.gymBtn.hot .pic { border-color: #ffffff; }
+@keyframes gymPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 225, 77, .0); } 50% { box-shadow: 0 0 0 6px rgba(255, 225, 77, .22); } }
+/* the Box Field (src/boxfield.js): while the Box is open the field shows the Pokémon in it, and the team's field waits unseen */
+#boxField { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 1; pointer-events: none; }
+#boxField[hidden] { display: none; }
+.bxMon { position: absolute; left: 0; top: 0; image-rendering: pixelated; pointer-events: none; will-change: transform; transform-origin: 50% 100%; }
+.bxMon.standin { border-radius: 44% 44% 36% 36%; color: #10131b; font-family: "Segoe UI", system-ui, sans-serif; font-weight: 700; text-align: center; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .18), 0 0 0 2px rgba(16, 19, 27, .7); }
+.bxTag { position: absolute; transform: translateX(-50%); z-index: 100000; padding: 1px 8px 2px; border-radius: 99px; background: rgba(12, 14, 20, .86); color: #fff; font: 600 11px "Segoe UI", system-ui, sans-serif; white-space: nowrap; }
+.bxTag[hidden] { display: none; }
+#root.boxfield > #world, #root.boxfield > #top, #root.boxfield > #ground, #root.boxfield > #stPlaces { visibility: hidden; }
+body.stage.boxfield #stPlaces { visibility: hidden; }

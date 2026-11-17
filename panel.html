@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Screen Trainer Pokédex</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<div id="stage">
+
+  <!-- The Box: a second screen on a tray that slides out from behind the device -->
+  <aside id="boxunit" aria-label="Box" aria-hidden="true">
+    <div class="rails" aria-hidden="true"><i></i><i></i></div>
+    <div class="bezel">
+      <div class="lcd" id="boxlcd">
+        <header class="bar">
+          <h2>Box</h2><span class="count" id="boxCount"></span>
+          <input type="search" id="boxFind" placeholder="Name or type" aria-label="Find in the Box by name or type">
+          <select id="boxSort" aria-label="Sort the Box"><option value="">Your order</option><option value="lvl">Level</option><option value="sp">Pokédex number</option><option value="name">Name</option><option value="new">Newest</option></select>
+        </header>
+        <div class="boxbody">
+          <div class="rail" id="rail" data-zone="party" aria-label="Team"></div>
+          <div class="cells" id="boxGrid" data-zone="box" aria-label="Boxed Pokémon"></div>
+        </div>
+        <footer class="boxinfo" id="boxInfo"></footer>
+      </div>
+    </div>
+    <div class="grip" aria-hidden="true"></div>
+  </aside>
+
+  <main id="device">
+    <header id="top">
+      <span class="led" id="led" title="Lights up while a wild Pokémon is on your screen"></span>
+      <span class="brand">Screen Trainer <i>field dex</i> <b id="brandVer" title="The version of Screen Trainer"></b></span>
+      <span class="sky" id="sky" hidden></span>
+      <span class="readout" id="readout"></span>
+      <button class="wkey wide" id="noteKey" title="The Unown Notepad: write in Living Unown, save notes only Screen Trainer can read">notes</button>
+      <button class="wkey wide" id="fieldKey" title="Open the field window">field</button>
+      <button class="wkey" id="winMin" aria-label="Minimize" title="Minimize">–</button>
+      <button class="wkey" id="winClose" aria-label="Close this window" title="Close this window (the game keeps running)">×</button>
+    </header>
+
+    <div class="bezel">
+      <div class="lcd" id="lcd">
+
+        <section id="dex" class="screen">
+          <header class="bar">
+            <h2>Pokédex</h2><span class="count" id="dexCount"></span>
+            <input type="search" id="dexFind" placeholder="Name or number" aria-label="Find a species">
+            <select id="dexFilter" aria-label="Which species to list"><option value="all">All</option><option value="seen">Seen</option><option value="caught">Caught</option><option value="missing">Not caught yet</option></select>
+          </header>
+          <div class="split">
+            <div class="list" id="dexList" tabindex="0" aria-label="Species"><div class="pad" id="dexPad"></div></div>
+            <article class="entry" id="dexEntry"></article>
+          </div>
+        </section>
+
+        <section id="party" class="screen">
+          <header class="bar"><h2>Team</h2><span class="count" id="partyCount"></span><span class="hint">Drag to reorder. The first slot leads.</span></header>
+          <div class="split">
+            <div class="slots" id="partySlots" data-zone="party"></div>
+            <article class="entry" id="partyEntry"></article>
+          </div>
+        </section>
+
+        <section id="bag" class="screen">
+          <header class="bar"><h2>Bag</h2><span class="count" id="bagCount"></span><div class="pockets" id="pockets"></div></header>
+          <div class="split">
+            <div class="tiles" id="bagTiles"></div>
+            <article class="entry" id="bagEntry"></article>
+          </div>
+        </section>
+
+        <section id="trainer" class="screen">
+          <header class="bar"><h2>Trainer</h2><span class="count" id="trainerSince"></span></header>
+          <div class="scroll" id="trainerBody"></div>
+        </section>
+
+        <section id="import" class="screen">
+          <header class="bar"><h2>Import a team</h2><span class="hint" id="impHint"></span><button class="btn" id="impBack" style="margin-left:auto" title="Back to Options. Nothing is added.">Back</button></header>
+          <div class="scroll" id="impBody">
+            <p class="sub">Paste a team in Pokémon Showdown's text format, or just type names, one Pokémon to a line. Whatever is missing is filled in.</p>
+            <textarea id="impText" rows="9" spellcheck="false" placeholder="Sparky (Pikachu) (F) @ Light Ball&#10;Level: 50&#10;Timid Nature&#10;- Thunderbolt&#10;- Volt Tackle&#10;&#10;Garchomp&#10;Rotom"></textarea>
+            <div class="acts"><button class="btn go" id="impRead" title="Read the text and show what would be added. Nothing is added yet.">Read it</button><span class="sub" id="impNote"></span></div>
+            <div id="impList"></div>
+            <div class="acts" id="impDo" hidden><button class="btn go" id="impAdd" title="Adds the ticked Pokémon: to the team while it has room, the rest to the Box.">Add them</button><span class="sub" id="impSum"></span></div>
+          </div>
+        </section>
+
+        <section id="options" class="screen">
+          <header class="bar"><h2>Options</h2><span class="hint" id="optHint"></span></header>
+          <div class="scroll" id="optBody"></div>
+        </section>
+
+        <section id="help" class="screen">
+          <header class="bar"><h2>How to play</h2></header>
+          <div class="scroll prose">
+            <p class="loadhint">Played before, on this computer or another? <button class="btn" id="helpLoad">Load a saved game…</button> (Options › Save data makes one.)</p>
+            <p>Screen Trainer is an invisible layer over your whole screen. There is no background, floor or scenery, and clicks pass straight through to your other windows unless the pointer is on a Pokémon or an item. If you would rather keep everyone in one place, Options can put up a field in a window of its own.</p>
+            <h3>Catching</h3>
+            <ul>
+              <li>Wild Pokémon hop in from the edges of the screen. <b>Left-click</b> one to weaken it. Your clicks never knock it out.</li>
+              <li><b>Right-click</b> it, or click the ball beside its name, to throw a ball. The blue bar is your catch chance: it rises as health drops and when the Pokémon is asleep, frozen, paralysed, poisoned or burned.</li>
+              <li>Your first catch becomes your team leader. The team holds six; later catches go to the Box.</li>
+              <li>The plain <b>Poké Ball</b> is your standard ball and never runs out. Better balls are found, <b>10 to 100 at a time</b> (of the Master Ball, 1 to 10): a stack you find is used for your next throws until it is gone, then it is back to the Poké Ball. The Bag lets you choose another stack or stop using one.</li>
+              <li>Turn on <b>Hands off my target</b> in Options and the team leaves the Pokémon you are clicking completely alone.</li>
+            </ul>
+            <h3>Wild Pokémon that stay</h3>
+            <ul>
+              <li>A wild Pokémon that nobody is fighting settles in and strolls about instead of leaving, and some come in peace from the start. The team leaves them alone. One the team weakened for you keeps waiting to be caught.</li>
+              <li><b>Click</b> one and it is an encounter again; point at it to see its name. Options sets how many may stay (none: they wander off as they used to).</li>
+            </ul>
+            <h3>The field (windowed mode)</h3>
+            <ul>
+              <li>Options or the tray menu puts up <b>the field</b>: a window you can move and resize. Your whole team is called inside, and wild Pokémon come in over its edges instead of the edges of the screen.</li>
+              <li>The field is grown from a seed, and the seed is what you have caught. With nothing caught it is plain grass; every species adds a patch of its own ground, a pond for a Water type, snow for an Ice type and so on.</li>
+              <li><b>Closing</b> the field (or minimising it) only takes the barriers away: everyone roams the whole screen until you create it again.</li>
+            </ul>
+            <h3>Your team</h3>
+            <ul>
+              <li><b>Click</b> a team member to pet it. <b>Drag</b> it to move it. <b>Right-click</b> it to open this window.</li>
+              <li>Petting an injured team member mends it a very little, until a second after the last pet.</li>
+              <li>Affection makes a Pokémon listen better and, at higher hearts, earn more experience, hang on at 1 HP, dodge, shrug off status and land more critical hits.</li>
+              <li>The leader picks the target; each member then decides whether to follow orders. Obedient members hold back so you can catch. Disobedient ones loaf, pick their own fights and will happily knock out the Pokémon you wanted.</li>
+              <li>Nature decides aptitude: born leaders, steady followers, and free spirits who lead poorly and listen less.</li>
+            </ul>
+            <h3>Sizes</h3>
+            <ul>
+              <li>Species are drawn to scale from their Pokédex height, so an Onix towers over a Pikachu. Options has gentler settings.</li>
+              <li>Every Pokémon is also <b>Small</b>, <b>Medium</b>, <b>Large</b> or <b>Extra large</b> for its kind (about 18, 61, 16 and 5 in a hundred). Alphas are always Extra large. Its size and height are on its team page.</li>
+            </ul>
+            <h3>Weather and legendary visits</h3>
+            <ul>
+              <li>Now and then the weather turns. It strengthens and weakens moves and can leave a weather mark on what you catch, but it hurts nobody. Options sets how often.</li>
+              <li>Rarely a legendary Pokémon visits. A <b>Friendly</b> one is petted, not fought: click it to earn its trust, which heals your team, earns a gift and makes it far easier to catch. A <b>Raging</b> one is a boss that goes for your team. A <b>Swift</b> one darts away from your pointer until it is out of breath. All three can be caught.</li>
+            </ul>
+            <h3>Mewtwo</h3>
+            <p>The XXL Super Alpha Mewtwo on your screen is your computer's guardian. Click it, or the <b>mewtwo</b> key, for its window: Windows security and updates at a glance, tune-up profiles you can undo, and questions to Mewtwo, answered by itself or by an AI you connect. Drag it to move it; Options hides it.</p>
+            <h3>Items</h3>
+            <ul>
+              <li>Now and then a beaten or caught Pokémon leaves an item behind. Click it, or wait: a free team member will fetch it.</li>
+              <li>Open the <b>Bag</b> to use medicine, give a Pokémon something to hold, use an evolution item or choose which stack of balls your next throws use.</li>
+              <li>During fights the team shares medicine from the Bag by itself. You can turn that off in Options.</li>
+            </ul>
+            <h3>Box</h3>
+            <p>Pull the <b>box</b> tab on the right of the device and a second screen slides out. Drag Pokémon between the team rail and the Box, or within either, to arrange them.</p>
+            <h3>Sound</h3>
+            <p>The <b>mute</b> key sits by the speaker. <b>random</b> jumps to another track. During fights the music changes to a battle theme. Options has the volumes and the one-time import of sounds from a ROM.</p>
+            <h3>Options</h3>
+            <p>Every category on the Options screen folds shut with a click on its heading; <b>Fold all</b> and <b>Open all</b> are at the top. <b>Experience</b> sets how fast the team levels up, and <b>Sprite size</b> now goes down to 0.1×.</p>
+            <h3>Android app</h3>
+            <p>Options > Android app > <b>Export APK</b> packs the game into an app for a phone or tablet, with the options exactly as they are set at that moment. In the app they are locked, and the game plays on the field. Copy the file to the device and open it there to install. It also offers itself as a screen saver in the device's settings.</p>
+            <h3>Tray icon</h3>
+            <p>Right-click the tray icon for Find my team, the field window, strolling mode, size, opacity, mute, music and close. <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>P</kbd> hides or shows the overlay.</p>
+            <p class="fine" id="about"></p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <nav id="keys" aria-label="Screens">
+      <button class="key" data-tab="dex">dex</button>
+      <button class="key" data-tab="party">team</button>
+      <button class="key" data-tab="bag">bag</button>
+      <button class="key" data-tab="trainer">trainer</button>
+      <button class="key" data-tab="options">options</button>
+      <button class="key" data-tab="help">help</button>
+      <button class="key guard" id="guardKey" title="Mewtwo, your computer guardian (opens its own window)">mewtwo</button>
+      <button class="key stream" id="streamKey" title="Porygon-Z runs MyStream, the streaming studio: stream or record your games without showing the desktop (opens its own window)">porygon-z</button>
+      <button class="key optimize" id="optKey" title="Optimize, Rotom's computer organizer: tidy up a folder with a plan you approve first (opens its own window)">rotom</button>
+    </nav>
+
+    <footer id="deck">
+      <div class="tape" title="Now playing"><span class="note" aria-hidden="true"></span><span id="track">Music off</span></div>
+      <button class="mkey" id="mPrev" title="Previous track">prev</button>
+      <button class="mkey hot" id="mRandom" title="Jump to a random track">random</button>
+      <button class="mkey" id="mNext" title="Next track">next</button>
+      <button class="mkey lamp" id="mPlay" aria-pressed="false" title="Music on or off">music</button>
+      <button class="grille lamp" id="muteKey" aria-pressed="false" title="Mute all sound"><span class="holes" aria-hidden="true"></span>mute</button>
+      <button class="pull" id="boxToggle" aria-expanded="false" title="Slide the Box screen out">box</button>
+    </footer>
+  </main>
+</div>
+<div id="ghost" hidden></div>
+<script src="src/data.js"></script>
+<script src="src/data-extra.js"></script>
+<script src="src/size.js"></script>
+<!-- events.js is the game's weather and legendary-visit module; this window only reads its labels (Events.weatherLabel) -->
+<script src="src/events.js"></script>
+<script src="src/sprites.js"></script>
+<script src="src/unown.js"></script>
+<!-- field.js: this window only reads the field's seed and description (Field.plan, Field.describe) -->
+<script src="src/field.js"></script>
+<!-- showdown.js reads a team in Pokémon Showdown's text format: here for the look before importing (the game checks it again) -->
+<script src="src/showdown.js"></script>
+<!-- inside the exported Android app this page is shown in a frame, and the page around it stands in for the main process -->
+<script>if (!window.st && window.parent !== window && typeof window.parent.stForPanel === 'function') window.st = window.parent.stForPanel(window);</script>
+<script src="src/panel.js"></script>
+</body>
+</html>

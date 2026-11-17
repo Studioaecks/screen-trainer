@@ -1,0 +1,9 @@
+{
+  "name": "screen-trainer",
+  "productName": "Screen Trainer",
+  "version": "1.0.0",
+  "description": "An idle creature-catching overlay that draws over your whole screen.",
+  "main": "main.js",
+  "author": "Screen Trainer",
+  "license": "MIT"
+}

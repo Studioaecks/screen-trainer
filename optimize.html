@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Screen Trainer Optimize</title>
+<link rel="stylesheet" href="optimize.css">
+</head>
+<!-- Optimize (0.7): Rotom's computer organizer. This page only shows and asks; optimize.js in the main process is the
+     part that touches files, and states its rules at its top. The room at the top is where Rotom's helpers live: they
+     are confined to this window (never on the overlay, never on the MyStream stage, never catchable). -->
+<body>
+<header id="top">
+  <span class="brand">Rotom <i>optimize</i></span>
+  <span id="say" aria-live="polite"></span>
+</header>
+<section id="room" aria-label="Rotom's helpers"><div id="floor"></div></section>
+<main>
+  <!-- 0.9.9: the big tidy-up, a walkthrough (src/tidy-ui.js; tidy.js in the main process does the work and states its rules) -->
+  <section class="card wide" id="bigCard">
+    <h2>The big tidy-up <small>Rotom walks you through it</small></h2>
+    <div id="big"></div>
+  </section>
+  <h2 class="or">Or just the loose files of one folder</h2>
+  <section class="card" id="where">
+    <h2>1. A folder</h2>
+    <p class="path" id="folder">No folder chosen yet.</p>
+    <p class="sub" id="folderNote"></p>
+    <button class="btn go" id="pick" title="Opens Windows' own folder dialog. Rotom only ever works inside the folder you choose there.">Choose a folder…</button>
+  </section>
+  <section class="card" id="how">
+    <h2>2. A plan</h2>
+    <label class="row"><span>Sort the loose files</span>
+      <select id="mode" title="How the loose files in the folder are sorted into subfolders.">
+        <option value="kind">by kind (Pictures, Videos, Documents…)</option>
+        <option value="year">by year</option>
+        <option value="kindyear">by kind, then year</option>
+      </select></label>
+    <div class="acts">
+      <button class="btn go" id="look" title="Rotom reads the names, sizes and dates in the folder and shows what it would do. Nothing is moved.">Show me the plan</button>
+      <button class="btn" id="ai" title="Sends the list of file names (nothing else) to the AI chosen in Mewtwo's window, and shows the folders it suggests. Nothing is moved.">Ask the AI instead</button>
+    </div>
+    <p class="sub" id="planNote"></p>
+  </section>
+  <section class="card wide" id="planCard" hidden>
+    <h2>3. Look it over</h2>
+    <div id="folders"></div>
+    <details><summary id="sampleSum">Every file</summary><div id="sample"></div></details>
+    <div class="acts">
+      <button class="btn go big" id="apply" title="Moves the files exactly as shown. Nothing is deleted or overwritten, and Undo puts everything back.">Sort them</button>
+      <span class="sub" id="applyNote"></span>
+    </div>
+  </section>
+  <section class="card wide" id="logCard">
+    <h2>What Rotom has done</h2>
+    <div class="acts"><button class="btn" id="undo" title="Moves the files of the last sorting back where they were. A file you have changed since is left alone.">Undo the last sorting</button><span class="sub" id="undoNote"></span></div>
+    <div id="log"></div>
+    <p class="fine">Rotom moves files into subfolders of the folder you chose. It never opens, deletes or overwrites a file, never leaves that folder, and cannot be pointed at Windows, your programs or your whole user folder.</p>
+  </section>
+</main>
+<script src="src/data.js"></script>
+<script src="src/sprites.js"></script>
+<script src="src/optimize-ui.js"></script>
+<script src="src/tidy-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Screen Trainer field</title>
+<style>
+  /* The field window (windowed mode). This page only draws the ground: src/field.js generates it from the Pokémon that
+     are there (0.7: an equal share of the field for each of the team's six, or for everyone in the Box while the Box is
+     open). The Pokémon themselves, and Fountain Square, are drawn by the overlay, which lies on top of this window and
+     keeps them inside it. The overlay also owns the camera: this page reports a drag of the grass and a turn of the
+     wheel, and draws the ground the way the overlay says its camera looks at the world.
+     forced-color-adjust: a Windows contrast theme must not repaint the field (see panel.css). */
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #23502c; user-select: none; -webkit-user-select: none; forced-color-adjust: none; cursor: grab; }
+  body.panning { cursor: grabbing; }
+  canvas { position: fixed; left: 0; top: 0; image-rendering: pixelated; transform-origin: 0 0; }
+</style>
+</head>
+<body>
+<canvas id="field"></canvas>
+<script src="src/data.js"></script>
+<script src="src/field.js"></script>
+<script>
+'use strict';
+(() => {
+  const st = window.st, cv = document.getElementById('field');
+  if (st.onMyPointer) st.onMyPointer((m) => { document.documentElement.style.cursor = m && typeof m.css === 'string' ? m.css : ''; });      // (0.9.7) the mouse in the field window is the player's own pointer
+  const typesOf = (sp) => (DATA.dex[sp] ? DATA.dex[sp].t.map((t) => DATA.types[t]) : []);
+  let ground = { kind: 'team', list: [] }, view = null, queued = false, drawn = '';
+  /** the world's size: what the overlay says, or (until it has, and on an older overlay) this window's own */
+  const world = () => (view ? { W: view.W, H: view.H } : { W: window.innerWidth, H: window.innerHeight });
+  function place() {
+    const w = world();
+    cv.style.width = w.W + 'px'; cv.style.height = w.H + 'px';
+    cv.style.transform = view ? `translate(${(-view.x * view.z).toFixed(2)}px, ${(-view.y * view.z).toFixed(2)}px) scale(${view.z})` : '';
+  }
+  function draw() {
+    queued = false;
+    const w = world(), dpr = window.devicePixelRatio || 1, sig = JSON.stringify([ground, w, dpr]);
+    place();
+    if (sig === drawn) return;
+    drawn = sig;
+    const plan = Field.partyPlan(ground.list, typesOf, { min: ground.kind === 'team' ? 6 : 1, aspect: w.W / Math.max(1, w.H) });
+    Field.draw(cv, plan, w.W, w.H, dpr);
+    document.title = plan.species ? `Screen Trainer field · ${plan.species} Pokémon, ${ground.kind === 'box' ? 'the Box' : 'the team'}` : 'Screen Trainer field';
+    window.fieldPlan = { seed: Field.seedText(plan.seed), species: plan.species, shares: plan.shares, kind: ground.kind, patches: plan.cells.filter((c) => c.sp).length, text: Field.describeParty(plan), world: w, view };      // for the self-check
+  }
+  const redraw = () => { if (!queued) { queued = true; requestAnimationFrame(draw); } };
+  window.addEventListener('resize', redraw);
+  draw();
+  if (!st) return;
+  // the game (in the overlay) says who the ground is grown from; a change of team grows another field
+  st.onState((s) => {
+    const g = s && s.ground;
+    if (!g || !Array.isArray(g.list)) return;
+    const next = { kind: g.kind === 'box' ? 'box' : 'team', list: g.list.slice(0, 1100).map((n) => Number(n) || 0) };
+    if (JSON.stringify(next) === JSON.stringify(ground)) return;
+    ground = next; redraw();
+  });
+  st.requestState(false);
+  setTimeout(() => st.requestState(false), 1500);          // once more, in case the overlay was still starting
+  // ---- the camera: the overlay's (see the top of this page)
+  const setView = (v) => { view = v && v.W > 0 && v.H > 0 && v.z > 0 ? v : null; if (window.fieldPlan) window.fieldPlan.view = view; redraw(); };
+  if (st.onFieldView) st.onFieldView(setView);
+  if (st.fieldViewGet) st.fieldViewGet().then(setView).catch(() => {});
+  if (!st.fieldCam) return;
+  // dragging the grass moves the camera; the wheel steps through the zoom levels allowed in Options
+  let pan = null, wheelAt = 0;
+  window.addEventListener('mousedown', (e) => { if (e.button !== 0) return; pan = { x: e.screenX, y: e.screenY }; document.body.classList.add('panning'); });
+  window.addEventListener('mousemove', (e) => { if (!pan) return; const dx = e.screenX - pan.x, dy = e.screenY - pan.y; if (!dx && !dy) return; pan = { x: e.screenX, y: e.screenY }; st.fieldCam({ pan: [dx, dy] }); });
+  const end = () => { pan = null; document.body.classList.remove('panning'); };
+  window.addEventListener('mouseup', end); window.addEventListener('blur', end);
+  window.addEventListener('wheel', (e) => { const now = performance.now(); if (!e.deltaY || now - wheelAt < 140) return; wheelAt = now; st.fieldCam({ zoom: e.deltaY < 0 ? 1 : -1, at: [e.clientX, e.clientY] }); }, { passive: true });
+  window.addEventListener('contextmenu', (e) => e.preventDefault());
+})();
+</script>
+</body>
+</html>

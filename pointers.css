@@ -1,0 +1,39 @@
+/* Screen Trainer — the pointers of visiting Trainers (0.8): on the MyStream stage (src/visitors.js) and, as the choice
+   of pointers, in the online window (visit.html). Drawn here, in CSS: a pointer is a reward, not a sprite. */
+#visitors { position: absolute; inset: 0; pointer-events: none; z-index: 100003; }
+.vp { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; --a: #e8413c; --b: #ffffff; --edge: #20242c; --who: #7ee08a; }
+.vp::before, .vp i { content: ''; position: absolute; left: 0; top: 0; width: 24px; height: 32px; clip-path: polygon(0 0, 0 80%, 23% 61%, 42% 100%, 62% 91%, 43% 55%, 78% 55%); }
+.vp::before { background: var(--edge); }
+.vp i { background: linear-gradient(180deg, var(--a) 0 47%, var(--edge) 47% 55%, var(--b) 55%); transform: translate(2px, 3.4px) scale(.78); transform-origin: 0 0; }
+:is(.vp, .vpEdge)[data-k="great"] { --a: #3b82e0; --b: #f2f6ff; }
+:is(.vp, .vpEdge)[data-k="ultra"] { --a: #f5c518; --b: #2b2f38; }
+:is(.vp, .vpEdge)[data-k="master"] { --a: #8b46d6; --b: #f6ecff; }
+:is(.vp, .vpEdge)[data-k="star"] { --a: #ffe14d; --b: #fff7c2; }
+:is(.vp, .vpEdge)[data-k="badge"] { --a: #c9d2dc; --b: #8d98a6; }
+:is(.vp, .vpEdge)[data-k="crown"] { --a: #ffd24a; --b: #b8860b; }
+:is(.vp, .vpEdge)[data-k="bolt"] { --a: #ff8a2a; --b: #ffe14d; }
+.vp[data-slot="2"] { --who: #7cc4ff; }
+.vp[data-slot="3"] { --who: #ff9ecb; }
+.vpName { position: absolute; left: 16px; top: 28px; white-space: nowrap; padding: 0 9px 1px; border-radius: 99px; background: rgba(16, 19, 27, .78); border-bottom: 2px solid var(--who); color: #f3f6ff; font: 16px/1.25 'Jersey 20', 'DotGothic16', sans-serif; letter-spacing: .3px; }
+.vp[data-k="star"] .vpName::before { content: '✦ '; color: #ffe14d; }
+.vp[data-k="crown"] .vpName::before { content: '♛ '; color: #ffd24a; }
+.vp[data-k="bolt"] .vpName::before { content: '⚡ '; color: #ff8a2a; }
+.vpSay { position: absolute; left: 14px; top: -8px; transform: translateY(-100%); white-space: nowrap; padding: 3px 11px 4px; border-radius: 13px 13px 13px 3px; background: #ffffff; color: #20242c; border: 2px solid #20242c; font: 400 18px/1.15 'Jersey 20', 'DotGothic16', sans-serif; box-shadow: 0 2px 0 rgba(0, 0, 0, .25); }
+.vpSay[hidden] { display: none; }
+.vpSay.host { transform: translate(-50%, -100%); border-radius: 13px; border-color: #ffd24a; background: #2a1846; color: #fff; }
+/* 0.9.4: the owner's own pointer on the MyStream stage (src/stage.js, "the owner's own pointer"), drawn like a visitor's
+   but larger (setting "size" in MyStream's pointer tab) and with a light rim so it reads on any game; and the arrow on
+   the stage's rim, in the pointer's colours, that shows where the mouse went when it is off the stage. Both lie on top of
+   everything on the stage (and stay when "Screen Trainer" is switched off there). */
+#hostPointer, #hostEdge { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 2002; transform-origin: 0 0; }
+#hostPointer[hidden], #hostEdge[hidden] { display: none; }
+.vp.host { filter: drop-shadow(0 0 1.5px #ffffff) drop-shadow(0 1px 2px rgba(0, 0, 0, .55)); }
+.vpEdge { width: 0; height: 0; will-change: transform; --a: #e8413c; --b: #ffffff; --edge: #20242c; }
+.vpEdge b { position: absolute; left: -16px; top: -16px; width: 32px; height: 32px; border-radius: 50%; box-sizing: border-box; border: 3px solid var(--edge);
+  background: linear-gradient(180deg, var(--a) 0 46%, var(--edge) 46% 56%, var(--b) 56%); box-shadow: 0 0 0 2px rgba(255, 255, 255, .8), 0 0 12px var(--a); animation: vpEdgePulse 1.4s ease-in-out infinite; }
+.vpEdge i { position: absolute; left: 15px; top: -10px; width: 15px; height: 20px; background: var(--a); clip-path: polygon(0 0, 100% 50%, 0 100%); filter: drop-shadow(0 0 1px #ffffff); }
+@keyframes vpEdgePulse { 50% { box-shadow: 0 0 0 4px rgba(255, 255, 255, .55), 0 0 20px var(--a); } }
+/* 0.9.7: a visitor's arrow on the rim when its pointer left the picture (src/visitors.js), and hidden pointers */
+.vEdge { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; }
+.vp[hidden], .vEdge[hidden] { display: none; }
+.vpSay.host { white-space: normal; width: max-content; max-width: 460px; text-align: center; }      /* (0.9.7) what the host typed may be a sentence */

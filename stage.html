@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MyStream stage</title>
+<link rel="stylesheet" href="overlay.css">
+<link rel="stylesheet" href="stage.css">
+<link rel="stylesheet" href="square.css">
+<link rel="stylesheet" href="pointers.css">
+</head>
+<!-- The MyStream stage: the one page viewers see (mystream.js in the main process explains the two windows).
+     From the ground up: the grass, the games that are switched on, the game itself (the same #root and #screen as
+     overlay.html, with the fountain standing in its world), games set "in front". The sticky notes lie on the
+     grass, under the Pokémon (stage.css gives them their level).
+     Nothing private may ever be added to this page. -->
+<body class="stage">
+<canvas id="stGround"></canvas>
+<div id="stPlaces" class="stLayer"></div>
+<div id="root">
+  <canvas id="ground"></canvas>
+  <div id="world"></div>
+  <div id="boxField" hidden></div>
+  <canvas id="top"></canvas>
+</div>
+<div id="screen">
+  <div id="toasts"></div>
+  <div id="notice" hidden></div>
+</div>
+<div id="stNotes" class="stLayer"></div>
+<div id="stMic" hidden><i></i>talking</div>
+<!-- the game: the same list, in the same order, as overlay.html -->
+<script src="src/data.js"></script>
+<script src="src/data-extra.js"></script>
+<script src="src/data-breed.js"></script>
+<script src="src/data-forms.js"></script>
+<script src="src/size.js"></script>
+<script src="src/mon.js"></script>
+<script src="src/breed.js"></script>
+<script src="src/sprites.js"></script>
+<script src="src/fx.js"></script>
+<script src="src/machine.js"></script>
+<script src="src/core.js"></script>
+<script src="src/items.js"></script>
+<script src="src/honors.js"></script>
+<script src="src/notify.js"></script>
+<script src="src/sound.js"></script>
+<script src="src/battle.js"></script>
+<script src="src/game.js"></script>
+<script src="src/forms.js"></script>
+<script src="src/rivals.js"></script>
+<script src="src/events.js"></script>
+<script src="src/mewtwo.js"></script>
+<!-- the stage itself (StageHost must exist before the game starts, so Mewtwo's words are masked from the first one) -->
+<script src="src/field.js"></script>
+<script src="src/fountain.js"></script>
+<script src="src/stations.js"></script>
+<script src="src/square.js"></script>
+<script src="src/boxfield.js"></script>
+<script src="src/showdown.js"></script>
+<script src="pointers.js"></script>
+<script src="src/visitors.js"></script>
+<script src="src/stage.js"></script>
+<script src="src/overlay.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Screen Trainer</title>
+<link rel="stylesheet" href="overlay.css">
+<style>
+  /* The page inside the exported Android app (apkexport.js packs it; android/ is the shell that shows it).
+     It is the overlay page with three additions: the field as the ground (the same one the field window draws),
+     a key that opens the Pokédex device in a frame, and src/android.js, which stands in for the PC's main process.
+     Opened in a desktop browser it works too, which is how it is tested (tools/androidcheck.js says how). */
+  html, body { background: #6cbc5d; touch-action: none; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+  #field { position: fixed; left: 0; top: 0; width: 100%; height: 100%; image-rendering: pixelated; z-index: 0; }
+  #root { z-index: 1; }
+  .ui { position: fixed; z-index: 20; }
+  #dexKey { right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); width: 54px; height: 54px; border-radius: 50%; border: 2px solid #10131b;
+    background: rgba(16, 19, 27, .72); color: #eef2ff; font: 700 13px system-ui, sans-serif; letter-spacing: .04em; box-shadow: 0 3px 10px rgba(0, 0, 0, .35); }
+  #dexKey:active { transform: translateY(2px); box-shadow: none; }
+  #dexWrap { inset: 0; background: rgba(8, 10, 16, .55); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #dexWrap[hidden] { display: none; }
+  #dexFrame { border: 0; background: transparent; flex: none; transform-origin: 50% 50%; }
+  /* Mewtwo's sheet: what it can tell about this device */
+  #guardWrap { inset: 0; background: rgba(8, 10, 16, .55); display: flex; align-items: center; justify-content: center; padding: 16px; touch-action: manipulation; }
+  #guardWrap[hidden] { display: none; }
+  #guard { width: min(420px, 100%); max-height: 100%; overflow: auto; border-radius: 16px; border: 1px solid #5d6cff66; background: rgba(16, 19, 30, .94); color: #e8ecff; font: 15px/1.4 system-ui, sans-serif; padding: 16px 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); }
+  #guard h2 { margin: 0 0 4px; font-size: 17px; letter-spacing: .02em; }
+  #guardSay { margin: 0 0 12px; color: #c9b8ff; }
+  #guardRows div { display: flex; justify-content: space-between; gap: 14px; padding: 6px 0; border-top: 1px solid #ffffff14; }
+  #guardRows span { color: #9aa3c7; flex: none; } #guardRows b { font-weight: 600; text-align: right; }
+  #guardClose { margin-top: 12px; width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #5d6cff; background: #232a52; color: #fff; font: 600 15px system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<canvas id="field"></canvas>
+<div id="root">
+  <canvas id="ground"></canvas>
+  <div id="world"></div>
+  <canvas id="top"></canvas>
+</div>
+<div id="screen">
+  <div id="toasts"></div>
+  <div id="notice" hidden></div>
+</div>
+<button id="dexKey" class="ui" aria-label="Open the Pokédex" hidden>dex</button>
+<div id="dexWrap" class="ui" hidden><iframe id="dexFrame" title="Pokédex"></iframe></div>
+<div id="guardWrap" class="ui" hidden><div id="guard" role="dialog" aria-label="Mewtwo"><h2>Mewtwo watches this device</h2><p id="guardSay"></p><div id="guardRows"></div><button id="guardClose">Close</button></div></div>
+<!-- defaults.js is written for the PC's main process (module.exports); this hands the page the same table and range checks -->
+<script>var module = { exports: {} };</script>
+<script src="defaults.js"></script>
+<script>window.STDefaults = module.exports; module = undefined;</script>
+<!-- The same scripts, in the same order, as overlay.html; then the field, then android.js (which must come before
+     overlay.js: overlay.js starts by asking window.st for the settings and the save). -->
+<script src="src/data.js"></script>
+<script src="src/data-extra.js"></script>
+<script src="src/data-breed.js"></script>
+<script src="src/data-forms.js"></script>
+<script src="src/size.js"></script>
+<script src="src/mon.js"></script>
+<script src="src/breed.js"></script>
+<script src="src/sprites.js"></script>
+<script src="src/fx.js"></script>
+<script src="src/machine.js"></script>
+<script src="src/core.js"></script>
+<script src="src/items.js"></script>
+<script src="src/honors.js"></script>
+<script src="src/notify.js"></script>
+<script src="src/sound.js"></script>
+<script src="src/battle.js"></script>
+<script src="src/game.js"></script>
+<script src="src/forms.js"></script>
+<script src="src/rivals.js"></script>
+<script src="src/events.js"></script>
+<script src="src/mewtwo.js"></script>
+<script src="src/field.js"></script>
+<script src="src/showdown.js"></script>
+<script src="src/android.js"></script>
+<script src="src/overlay.js"></script>
+</body>
+</html>

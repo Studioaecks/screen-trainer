@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Unown Notepad</title>
+<link rel="stylesheet" href="notepad.css">
+</head>
+<!-- The Unown Notepad (0.9.8, owner's list 11-16 update 17): a classic notepad whose writing is Living Unown
+     (src/unown.js). It saves .unown notes (stfiles.js, main process) where the owner chooses; nothing is ever sent
+     anywhere. src/notepad.js does the work. -->
+<body>
+<nav id="menu">
+  <div class="m"><button class="top">File</button><div class="drop">
+    <button data-do="new">New<kbd>Ctrl+N</kbd></button>
+    <button data-do="open">Open…<kbd>Ctrl+O</kbd></button>
+    <button data-do="save">Save<kbd>Ctrl+S</kbd></button>
+    <button data-do="saveAs">Save as…<kbd>Ctrl+Shift+S</kbd></button>
+    <hr>
+    <button data-do="lock">Lock with a word…</button>
+    <hr>
+    <button data-do="close">Close</button>
+  </div></div>
+  <div class="m"><button class="top">Edit</button><div class="drop">
+    <button data-do="undo">Undo<kbd>Ctrl+Z</kbd></button>
+    <hr>
+    <button data-do="cut">Cut<kbd>Ctrl+X</kbd></button>
+    <button data-do="copy">Copy<kbd>Ctrl+C</kbd></button>
+    <button data-do="paste">Paste<kbd>Ctrl+V</kbd></button>
+    <hr>
+    <button data-do="all">Select all<kbd>Ctrl+A</kbd></button>
+  </div></div>
+  <div class="m"><button class="top">View</button><div class="drop">
+    <button data-do="plain">Read plainly<kbd>Ctrl+R</kbd></button>
+    <button data-do="bigger">Bigger<kbd>Ctrl++</kbd></button>
+    <button data-do="smaller">Smaller<kbd>Ctrl+-</kbd></button>
+    <button data-do="calm">Calmer Unown</button>
+    <button data-do="ground">Living Background</button>
+  </div></div>
+</nav>
+<div id="word" hidden>
+  <span id="wordText">Lock this note with a word:</span>
+  <input id="wordIn" type="password" autocomplete="off" spellcheck="false" maxlength="200">
+  <button id="wordOk">OK</button><button id="wordNo">Cancel</button>
+</div>
+<!-- 0.9.8.1: a page of a fixed size, as in a word processor, on a desk. Its ground is grass, and recognised words
+     change it (src/unownland.js). Back to front: the ground, the Unown, then the see-through text box that is typed in. -->
+<main id="page">
+  <canvas id="land"></canvas>
+  <canvas id="unown"></canvas>
+  <div id="desk"><div id="sheet"><textarea id="text" spellcheck="false" autocomplete="off" aria-label="Your note"></textarea></div></div>
+</main>
+<footer id="status"><span id="where">Ln 1, Col 1</span><span id="count"></span><span id="lockState"></span><span id="saved"></span></footer>
+<script src="src/sprites.js"></script>
+<script src="src/unown.js"></script>
+<script src="src/unownland.js"></script>
+<script src="src/notepad.js"></script>
+</body>
+</html>

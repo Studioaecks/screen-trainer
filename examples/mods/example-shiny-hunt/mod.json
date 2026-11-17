@@ -1,0 +1,25 @@
+{
+  "format": "screen-trainer-mod/1",
+  "id": "example-shiny-hunt",
+  "name": "Example: shiny hunt",
+  "version": "1.0",
+  "author": "Screen Trainer",
+  "description": "An example mod to copy. Shinies 1 in 20, wild Pokemon twice as often, more Eevee and Dragon types, and an ember-red Field Dex.",
+  "settings": {
+    "shinyOdds": 20,
+    "spawnEvery": 12
+  },
+  "spawns": {
+    "133": 5,
+    "type:dragon": 2
+  },
+  "theme": {
+    "name": "Ember",
+    "colors": {
+      "shell": "#a8322d",
+      "shell-hi": "#d0594d",
+      "shell-lo": "#6e1d1a",
+      "tray": "#7d2622"
+    }
+  }
+}

@@ -1,0 +1,168 @@
+<!doctype html>
+<html data-theme="glass">
+<head>
+<meta charset="utf-8">
+<title>MyStream</title>
+<link rel="stylesheet" href="mystream.css">
+<link rel="stylesheet" href="pointers.css">
+</head>
+<!-- MyStream — the booth: the window the owner works in. Nothing on this page is streamed; viewers only ever see the
+     stage (stage.html), whose live picture is the <video> in the middle. src/booth.js does the work. -->
+<body>
+<div id="app">
+  <header id="bar">
+    <span class="led" id="led"></span>
+    <span class="brand">MyStream <i>field studio</i></span>
+    <span class="pill" id="status">OFF AIR</span>
+    <span class="pill rec" id="recPill" hidden></span>
+    <span class="grow"></span>
+    <button class="btn" id="recBtn" title="Save what viewers would see as a video file">Record</button>
+    <button class="btn live" id="goLive" title="Start streaming to Twitch">Go live</button>
+  </header>
+
+  <main id="main">
+    <section id="left">
+      <div class="bezel">
+        <div id="view">
+          <video id="pv" muted autoplay playsinline></video>
+          <div id="edit" hidden></div>
+          <div id="wait">Setting up the stage…</div>
+        </div>
+      </div>
+      <div id="under">
+        <div class="seg" id="mode" role="tablist" aria-label="What a click on the picture does">
+          <button data-mode="play" class="on">Play</button>
+          <button data-mode="arrange">Move things</button>
+        </div>
+        <span id="hint"></span>
+      </div>
+      <div id="mewtwo" hidden><b>Mewtwo, for your eyes only</b><span id="mewtwoText"></span></div>
+      <div id="talkRow">
+        <div id="talkWrap">
+          <div id="lock" aria-hidden="true">lock</div>
+          <button id="talk" aria-pressed="false"><span id="talkWord">hold to talk</span></button>
+        </div>
+        <div id="talkSide">
+          <div id="meter" title="Microphone level"><i></i></div>
+          <span id="talkHint">Hold to talk. Slide up while holding to keep the microphone open, tap again to close it.</span>
+        </div>
+      </div>
+    </section>
+
+    <aside id="side">
+      <div class="private">only you see this side</div>
+      <nav id="tabs">
+        <button class="key on" data-tab="games">games</button>
+        <button class="key" data-tab="notes">notes</button>
+        <button class="key" data-tab="live">live</button>
+        <button class="key" data-tab="record">record</button>
+        <button class="key" data-tab="pointer">pointer</button>
+        <button class="key" data-tab="options">options</button>
+      </nav>
+      <div class="lcd">
+        <section class="pane" id="pane-games">
+          <h2>On the stage</h2>
+          <p class="small">Only what is switched on here is ever shown. Your desktop and every other window stay private.</p>
+          <div id="builtin"></div>
+          <div id="sources"></div>
+          <h2>Open windows <button class="btn tiny" id="refresh">look again</button></h2>
+          <p class="small">Pick the games to show. They keep running in their own windows: play them there as always, viewers see it here.</p>
+          <div id="windows"></div>
+        </section>
+        <section class="pane" id="pane-notes" hidden>
+          <h2>Sticky notes for viewers</h2>
+          <textarea id="noteText" maxlength="160" rows="3" placeholder="Back in 5 minutes!"></textarea>
+          <div id="swatches"></div>
+          <div class="row"><button class="btn go" id="noteAdd">Stick it on the stage</button><span class="small" id="noteCount"></span></div>
+          <div id="notes"></div>
+          <p class="small">To move a note, choose “Move things” under the picture and drag it.</p>
+        </section>
+        <section class="pane" id="pane-live" hidden>
+          <h2>Twitch</h2>
+          <div id="twStatus" class="card"></div>
+          <label class="field">Stream title<input id="title" maxlength="140" placeholder="Chill idle stream"></label>
+          <div id="desk" class="card">
+            <div id="deskLine"></div>
+            <label class="field">Category<input id="gameQ" maxlength="60" placeholder="Type a game or category to change it" autocomplete="off" spellcheck="false"></label>
+            <div id="gameHits" class="row"></div>
+            <div class="row"><button class="btn" id="deskMark" title="Puts a marker into the running stream, to find the moment again later">Add a marker</button><button class="btn" id="deskManager" title="Opens Twitch's own Stream Manager in your browser">Stream Manager</button><button class="btn" id="deskPop" title="Opens your chat in a browser window of its own">Chat in a window</button></div>
+            <div id="deskNote" class="small"></div>
+          </div>
+          <h2>Chat <small id="chatState"></small></h2>
+          <div id="chatLog" class="chatlog" aria-live="polite" aria-label="Twitch chat"></div>
+          <div class="row"><input id="chatIn" maxlength="480" placeholder="Say something in chat" autocomplete="off"><button class="btn go" id="chatGo">Send</button></div>
+          <p class="small" id="chatNote"></p>
+          <details id="twLogin">
+            <summary>Log in with Twitch</summary>
+            <p class="small">Twitch gives every streaming program its own “Client ID”. Getting one is free and takes two minutes, once:</p>
+            <ol class="small">
+              <li>Open <b>dev.twitch.tv/console/apps</b> in your browser and log in.</li>
+              <li>“Register Your Application”: any name, OAuth Redirect URL <b>http://localhost</b>, Category <b>Broadcaster Suite</b>, Client Type <b>Public</b>.</li>
+              <li>Open the new application (“Manage”) and copy its <b>Client ID</b> here.</li>
+            </ol>
+            <label class="field">Client ID<input id="clientId" spellcheck="false" autocomplete="off"></label>
+            <div class="row"><button class="btn go" id="twGo">Log in with Twitch</button><button class="btn" id="twOut" hidden>Log out</button></div>
+            <div id="twCode" class="card" hidden></div>
+          </details>
+          <details id="twKeyBox">
+            <summary>Or paste a stream key instead</summary>
+            <p class="small">On twitch.tv: Creator Dashboard, Settings, Stream, “Primary Stream key”. It is stored encrypted on this computer and never shown again.</p>
+            <label class="field">Stream key<input id="streamKey" type="password" spellcheck="false" autocomplete="off"></label>
+            <div class="row"><button class="btn go" id="keySave">Save key</button><button class="btn" id="keyClear">Forget key</button></div>
+          </details>
+          <details>
+            <summary>Advanced</summary>
+            <label class="field">Video server (leave empty for Twitch’s own)<input id="server" spellcheck="false" placeholder="https://g.webrtc.live-video.net:4443/v2/offer"></label>
+            <p class="small">MyStream sends the picture the way browsers do (WebRTC, “WHIP”). Twitch accepts that but still calls it experimental.</p>
+          </details>
+          <p class="small tip">Tip: Steam can draw its pop-ups inside a game’s own window. To keep them off the stream, switch off “Enable the Steam Overlay while in-game” for each game you show (Steam, the game’s Properties).</p>
+        </section>
+        <section class="pane" id="pane-record" hidden>
+          <h2>Record a video</h2>
+          <p class="small">Saves exactly what viewers would see, ready for YouTube. Works with or without being live. From a five-second clip to a full hour.</p>
+          <label class="field">Length: <b id="recLenText"></b><input id="recLen" type="range" min="0" max="20" step="1"></label>
+          <div class="row"><button class="btn go" id="recGo">Start recording</button><button class="btn" id="recFolder">Open the folder</button></div>
+          <div id="recInfo" class="card"></div>
+        </section>
+        <section class="pane" id="pane-pointer" hidden>
+          <h2>Your pointer on the stream</h2>
+          <p class="small">On Screen Trainer the mouse is the player. Viewers see your own pointer where your mouse is: over a game it is where the mouse is in that game, anywhere else where it is on your main screen. Windows' own pointer is taken out of the games' pictures, so there is only one.</p>
+          <label class="check"><input type="checkbox" id="ptrShow"> Show my pointer to viewers</label>
+          <label class="field">Size: <b id="ptrSizeText"></b><input id="ptrSize" type="range" min="1" max="3" step="0.25"></label>
+          <label class="check"><input type="checkbox" id="ptrEdge"> When my mouse is off the stage, show an arrow at the edge pointing to it</label>
+          <h2>Pointer <small id="ptrCount"></small></h2>
+          <p class="small">Pointers are won in the game. The one you choose here is also the one visitors see when you visit them.</p>
+          <div id="ptrList"></div>
+          <h2>Windows' own pointer in each game</h2>
+          <p class="small">Set it per game in the games list (“mouse: hidden / shown”). Hidden is best: the little part of the game under the mouse is then shown as it was a moment before, until the mouse moves on.</p>
+          <p class="small" id="ptrNote"></p>
+        </section>
+        <section class="pane" id="pane-options" hidden>
+          <h2>Picture</h2>
+          <label class="field">Quality<select id="quality"><option value="720">720p, light on the computer</option><option value="1080">1080p, sharper</option></select></label>
+          <h2>Sound</h2>
+          <label class="field">Microphone<select id="micSel"></select></label>
+          <label class="check"><input type="checkbox" id="tuck"> Keep games off my desktop while they are on the stage <small style="display:block;opacity:.75;margin:2px 0 6px 24px">Each game's own window is moved off the screen; it keeps running and stays on the stage, and the mouse pointer is no longer drawn into its picture. To use a game, press “on my desktop too” at that game in the games list. Closing MyStream puts every window back where it was.</small></label>
+          <label class="check"><input type="checkbox" id="micBadge"> Show viewers a small “talking” sign while the microphone is open</label>
+          <label class="check"><input type="checkbox" id="pcSound"> Send the computer’s sound along</label>
+          <label class="field">The computer’s sound in the stream <span class="mixrow"><input type="range" id="pcVol" min="0" max="150" step="5"> <b id="pcVolText"></b></span></label>
+          <label class="field">The microphone in the stream <span class="mixrow"><input type="range" id="micVol" min="0" max="200" step="5"> <b id="micVolText"></b></span></label>
+          <p class="small">Each game has its own sound slider in the games list. It is the same slider as in the Windows volume mixer, so you hear the change too.</p>
+          <p class="small">That is <b>everything</b> the computer plays: game music, but also videos, calls and message sounds from other programs.</p>
+          <label class="field">Key to open and close the microphone from anywhere<input id="talkKey" spellcheck="false" placeholder="Control+Alt+T"></label>
+          <h2>MyStream</h2>
+          <p class="small" id="about"></p>
+          <div class="row"><button class="btn warn" id="closeAll">Close MyStream</button></div>
+          <p class="small">Closing sends your Pokémon back to roam the desktop.</p>
+        </section>
+      </div>
+    </aside>
+  </main>
+  <div id="toast" hidden></div>
+</div>
+<script src="pointers.js"></script>
+<script src="src/whip.js"></script>
+<script src="src/booth.js"></script>
+<script src="src/online-host.js"></script>
+</body>
+</html>

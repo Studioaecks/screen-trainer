@@ -1,0 +1,48 @@
+/* MyStream — the stage (stage.html): what viewers see. The game's own look comes from overlay.css; this file adds the
+   ground, the game windows, the fountain, the sticky notes and the "talking" sign. */
+@font-face { font-family: 'DotGothic16'; src: url('fonts/DotGothic16-Latin.ttf') format('truetype'); font-display: block; }
+@font-face { font-family: 'Jersey 20'; src: url('fonts/Jersey20.ttf') format('truetype'); font-display: block; }
+html { background: #6cbc5d; }
+/* the body must stay see-through: its own background would be painted over the ground and the games behind the Pokémon (they have negative z-indexes) */
+body.stage { background: transparent; cursor: default; }
+#stGround { position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: -3; image-rendering: pixelated; }
+.stLayer { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+/* What lies over what is the owner's to say (the order numbers in the booth's games list): src/stage.js gives #root (the
+   Pokémon), #stPlaces (the fountain and its places) and every game's own layer a z-index from that order. */
+body.stage #screen { z-index: 2000; }
+/* the sticky notes lie on the grass: over the games that are set behind, under the Pokémon, the fountain and the
+   effects (the owner's wish, 0.6; before that they were on top of everything). Same level as #stBack, later in the page. */
+#stNotes { z-index: 5; }
+/* on the stage the Pokémon are always fully there, whatever the desktop overlay's opacity is set to */
+body.stage #root, body.stage #screen { opacity: 1 !important; }
+/* "my Pokémon on the stage" switched off: the game goes on unseen, the fountain stays */
+body.stage.notrainer #world, body.stage.notrainer #ground, body.stage.notrainer #top, body.stage.notrainer #screen { visibility: hidden; }
+
+/* a game window on the stage (src/stage.js sets its place; the canvas is the window's picture with its background removed) */
+.src { position: absolute; }
+.src canvas { display: block; width: 100%; height: 100%; }
+.src video { position: absolute; left: 0; top: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; }
+.src.gone { display: none; }
+
+/* (the fountain, the places round it and the button on its top are in square.css, which the field window uses too) */
+
+/* what Mewtwo says is for the owner only: on the stage the card holds scrambled letters (src/stage.js) and is blurred as well */
+body.stage .gsay { filter: blur(7px); color: #cfd8f0; }
+
+/* sticky notes for the people watching */
+.note { position: absolute; width: 232px; box-sizing: border-box; padding: 20px 16px 16px; transform-origin: 50% 0; font: 26px/1.08 'Jersey 20', 'DotGothic16', 'Segoe UI', sans-serif; letter-spacing: .01em; color: #2a2740;
+  background: linear-gradient(170deg, var(--n1), var(--n2)); box-shadow: 0 2px 0 rgba(0, 0, 0, .14), 5px 9px 0 rgba(20, 50, 28, .22); overflow-wrap: anywhere; white-space: pre-wrap; text-align: center;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%); animation: notein .45s cubic-bezier(.2, 1.5, .4, 1) both; }
+.note::before { content: ''; position: absolute; left: 50%; top: -9px; width: 74px; height: 20px; margin-left: -37px; background: rgba(255, 255, 255, .55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5); transform: rotate(-2deg); }
+.note::after { content: ''; position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; background: linear-gradient(135deg, rgba(0, 0, 0, .16) 50%, transparent 50%); }
+.note.long { font-size: 21px; } .note.longer { font-size: 18px; text-align: left; }
+.note.yellow { --n1: #fff6a8; --n2: #ffe36a; } .note.pink { --n1: #ffd3e6; --n2: #ff9ccf; } .note.mint { --n1: #d6f8dc; --n2: #9fe6b0; }
+.note.sky { --n1: #d9f1ff; --n2: #9bd4ff; } .note.lilac { --n1: #ecdcff; --n2: #c9a7f2; } .note.peach { --n1: #ffe4cc; --n2: #ffb98a; }
+@keyframes notein { from { opacity: 0; transform: translateY(-18px) rotate(var(--rot, 0deg)) scale(.8); } to { opacity: 1; transform: rotate(var(--rot, 0deg)); } }
+
+/* a small sign while the microphone is open */
+#stMic { position: fixed; left: 18px; bottom: 16px; z-index: 2001; display: flex; align-items: center; gap: 8px; padding: 5px 14px 6px 11px; border-radius: 99px; font: 22px/1 'Jersey 20', sans-serif; color: #eef2ff;
+  background: rgba(16, 19, 27, .86); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18), 0 4px 0 rgba(0, 0, 0, .22); }
+#stMic[hidden] { display: none; }
+#stMic i { width: 11px; height: 11px; border-radius: 50%; background: #ff5c7a; box-shadow: 0 0 8px 2px rgba(255, 92, 122, .7); animation: micdot 1s steps(2, jump-none) infinite; }
+@keyframes micdot { 50% { opacity: .45; } }
