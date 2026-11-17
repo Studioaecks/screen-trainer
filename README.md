@@ -1,5 +1,7 @@
 # Screen Trainer 1.0
 
+**[⬇ Download for Windows](https://github.com/Studioaecks/screen-trainer/releases/latest/download/ScreenTrainer-1.0.0-windows-x64.zip)** · [All downloads](https://github.com/Studioaecks/screen-trainer/releases/latest)
+
 A fan-made idle game that draws over your whole screen. Wild Pokémon hop in from the edges while you work, your team
 fights and catches them, and a small Field Dex keeps the team, the Box, the Bag and the options. It can also put your
 idle desktop games on one calm picture and stream or record that picture (MyStream), look after the computer (Mewtwo),
@@ -32,10 +34,10 @@ Screen Trainer runs from its folder. Nothing is installed; to remove it, delete 
 
 | Download | Status |
 |---|---|
-| `ScreenTrainer-1.0.0-windows-x64.zip` | The main build. Tested on Windows 11. |
-| `ScreenTrainer-1.0.0-linux-x64.zip` | Untested. The overlay needs a desktop with a compositor. Mewtwo, Rotom's big tidy-up and MyStream's game windows are Windows-only. |
-| `ScreenTrainer-1.0.0-mac-arm64.zip`, `-mac-x64.zip` | Untested and not signed. Mewtwo, Rotom's big tidy-up and MyStream's game windows are Windows-only. |
-| `ScreenTrainer-1.0.0-source.zip` | Everything in this repository. |
+| [`ScreenTrainer-1.0.0-windows-x64.zip`](https://github.com/Studioaecks/screen-trainer/releases/latest/download/ScreenTrainer-1.0.0-windows-x64.zip) | The main build. Tested on Windows 11. |
+| [`ScreenTrainer-1.0.0-linux-x64.zip`](https://github.com/Studioaecks/screen-trainer/releases/latest/download/ScreenTrainer-1.0.0-linux-x64.zip) | Untested. The overlay needs a desktop with a compositor. Mewtwo, Rotom's big tidy-up and MyStream's game windows are Windows-only. |
+| [`ScreenTrainer-1.0.0-mac-arm64.zip`](https://github.com/Studioaecks/screen-trainer/releases/latest/download/ScreenTrainer-1.0.0-mac-arm64.zip) (Apple chip), [`-mac-x64.zip`](https://github.com/Studioaecks/screen-trainer/releases/latest/download/ScreenTrainer-1.0.0-mac-x64.zip) (Intel) | Untested and not signed. Mewtwo, Rotom's big tidy-up and MyStream's game windows are Windows-only. |
+| [`ScreenTrainer-1.0.0-source.zip`](https://github.com/Studioaecks/screen-trainer/releases/latest/download/ScreenTrainer-1.0.0-source.zip) | Everything in this repository. |
 
 1. Unzip it anywhere (right-click > Extract All on Windows). Do not run it from inside the zip.
 2. Start `Screen Trainer\ScreenTrainer.exe` (Windows), `Screen Trainer/start.sh` (Linux) or `Screen Trainer.app` (Mac).
